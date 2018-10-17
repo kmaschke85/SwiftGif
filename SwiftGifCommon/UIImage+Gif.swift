@@ -8,7 +8,7 @@
 
 import UIKit
 import ImageIO
-import CoreServices
+import MobileCoreServices
 
 extension UIImageView {
 

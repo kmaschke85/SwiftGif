@@ -8,6 +8,7 @@
 
 import UIKit
 import ImageIO
+import CoreServices
 
 extension UIImageView {
 
@@ -36,12 +37,17 @@ extension UIImage {
 
     public class func gif(data: Data) -> UIImage? {
         // Create source from data
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil), let sourceType = CGImageSourceGetType(source) else {
             print("SwiftGif: Source for the image does not exist")
             return nil
         }
-
-        return UIImage.animatedImageWithSource(source)
+        
+        if UTTypeConformsTo(sourceType, kUTTypeGIF) {
+            return UIImage.animatedImageWithSource(source)
+        } else if let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil) {
+            return UIImage.init(cgImage: cgImage)
+        }
+        return nil
     }
 
     public class func gif(url: String) -> UIImage? {
